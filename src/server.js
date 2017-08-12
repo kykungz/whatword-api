@@ -13,15 +13,18 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post('/create', (req, res, next) => {
   const words = req.body.words
-  game.create(words)
-  console.log(game.rooms);
-  res.send('ok')
+  let roomId = game.create(words)
+  res.send(roomId)
 })
+
 
 io.on('connection', (socket) => {
   socket.on('player', (data) => {
     let roomId = data.roomId
+    let room = game.rooms[game.rooms.indexOf(roomId)]
+    if (room) {
 
+    }
   })
 })
 
