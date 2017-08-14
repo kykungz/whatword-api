@@ -49,8 +49,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', ()  => {
 
   })
-  socket.emit('hi', 'this is asdfasdfasfdasdf')
-  socket.on('play', (data) => {
+
+  socket.on('join', (data) => {
     let roomId = data.roomId
     let room = game.getRoom(roomId)
     socket.join(roomId)

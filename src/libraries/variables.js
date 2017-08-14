@@ -1,3 +1,3 @@
-export const possibles = 'abcdefghijklmnpqrstuvwxyz123456789'
+export const possibles = 'abcdefghijkmnpqrstuvwxyz123456789'
 
 export const length = 6
