@@ -1,9 +1,9 @@
 import express from 'express'
+import cors from 'cors'
 import bodyParser from 'body-parser'
 import http from 'http'
 import socketIO from 'socket.io'
 import game from './game'
-import cors from 'cors'
 
 const app = express()
 const server = http.Server(app)
@@ -14,8 +14,10 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post('/create', (req, res, next) => {
-  const words = req.body.words
-  let room = game.create(words)
+  console.log(req.body);
+  const wordBank = req.body.wordBank
+  const password = req.body.password
+  let room = game.create(wordBank, password)
   room.setChannel(io.in(room.id))
   res.send(room.id)
 })
