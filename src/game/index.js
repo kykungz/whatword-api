@@ -6,7 +6,7 @@ const game = {
   create (words) {
     let room = new Room(words)
     this.rooms.push(room)
-    return room.id
+    return room
   },
   remove (id) {
     this.rooms.splice(rooms.indexOf(id),1)
