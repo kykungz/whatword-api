@@ -9,6 +9,11 @@ const game = {
   },
   remove (id) {
     this.rooms.splice(rooms.indexOf(id),1)
+  },
+  getRoom (id) {
+    return this.rooms.find((room) => {
+      return room.id === id
+    })
   }
 }
 
