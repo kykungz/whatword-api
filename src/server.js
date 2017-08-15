@@ -41,7 +41,7 @@ app.get('/room', (req, res, next) => {
   if (room) {
     res.send(room.state)
   } else {
-    next(new Error('Game not found'))
+    next(new Error('Game not found!'))
   }
 })
 
