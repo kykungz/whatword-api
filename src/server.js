@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import http from 'http'
 import socketIO from 'socket.io'
 import game from './game'
+import { deconstructRoom } from './libraries/util'
 
 const app = express()
 const server = http.Server(app)
@@ -30,24 +31,24 @@ app.post('/create', (req, res, next) => {
     next(err)
   } finally {
     console.log(game.rooms.map((room) => {
-      return {id:room.id, password:room.password, wordBank:room.wordBank, remainingWords:room.remainingWords, state:room.state}
+      return deconstructRoom(room)
     }))
   }
 })
 
 app.get('/room', (req, res, next) => {
   const id = req.query.id
+  const password = req.query.password
   const room = game.getRoom(id)
   if (room) {
-    res.send(room.state)
+    res.send(password === room.password ? room : room.state)
   } else {
     next(new Error('Game not found!'))
   }
 })
 
 io.on('connection', (socket) => {
-  socket.on('disconnect', ()  => {
-
+  socket.on('disconnect', () => {
   })
 
   socket.on('join', (data) => {
@@ -69,7 +70,7 @@ io.on('connection', (socket) => {
 })
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}

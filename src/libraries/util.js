@@ -7,3 +7,8 @@ export const generateRoomId = () => {
   }
   return roomId.join('')
 }
+
+export const deconstructRoom = (room) => {
+  const { channel, ...subObject } = room
+  return subObject
+}
