@@ -1,11 +1,11 @@
 import { possibles, length } from './variables'
 
 export const generateRoomId = () => {
-  let roomId = []
+  let id = []
   for (let i = 0; i < length; i++) {
-    roomId[i] = possibles.charAt(Math.random() * possibles.length)
+    id[i] = possibles.charAt(Math.random() * possibles.length)
   }
-  return roomId.join('')
+  return id.join('')
 }
 
 export const deconstructRoom = (room) => {

@@ -41,7 +41,20 @@ app.get('/room', (req, res, next) => {
   const password = req.query.password
   const room = game.getRoom(id)
   if (room) {
-    res.send(password === room.password ? room : room.state)
+    if (password === room.password) {
+      res.send({
+        success: true,
+        admin: true,
+        room
+      })
+    } else {
+      res.send({
+        success: true,
+        admin: false,
+        room: room.state
+      })
+    }
+    // res.send(password === room.password ? room : room.state)
   } else {
     next(new Error('Game not found!'))
   }
@@ -52,20 +65,20 @@ io.on('connection', (socket) => {
   })
 
   socket.on('join', (data) => {
-    let roomId = data.roomId
-    let room = game.getRoom(roomId)
-    socket.join(roomId)
+    let id = data.id
+    let room = game.getRoom(id)
+    socket.join(id)
     socket.emit('state', room.state)
   })
 
   socket.on('status', (data) => {
-    let roomId = data.roomId
-    socket.join(roomId)
+    let id = data.id
+    socket.join(id)
   })
 
   socket.on('remote', (data) => {
-    let roomId = data.roomId
-    socket.join(roomId)
+    let id = data.id
+    socket.join(id)
   })
 })
 

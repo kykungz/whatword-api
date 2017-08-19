@@ -1,7 +1,7 @@
 import { deconstructRoom } from '../libraries/util'
 import Room from './Room'
 
-const game = {
+export default {
   rooms: [],
   create (wordBank, password) {
     const room = new Room(wordBank, password)
@@ -15,8 +15,6 @@ const game = {
     const room = this.rooms.find((room) => {
       return room.id === id
     })
-    return deconstructRoom(room)
+    return room ? deconstructRoom(room) : undefined
   }
 }
-
-export default game
