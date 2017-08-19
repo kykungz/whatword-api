@@ -56,7 +56,9 @@ app.get('/room', (req, res, next) => {
     }
     // res.send(password === room.password ? room : room.state)
   } else {
-    next(new Error('Game not found!'))
+    const err = new Error('Game not found!')
+    err.status = 404
+    next(err)
   }
 })
 
