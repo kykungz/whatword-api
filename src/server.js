@@ -45,21 +45,19 @@ app.post('/update', (req, res, next) => {
   if (room) {
     if (password === room.password) {
       room.wordBank = wordBank
-      res.send(room)
+      res.send(deconstructRoom(room))
     } else {
       next(new Unauthorized('Wrong password!'))
     }
   } else {
-    const err = new Error('Game not found!')
-    err.status = 404
-    next(err)
+    next(new GameNotFound())
   }
 })
 
 app.get('/room', (req, res, next) => {
   const id = req.query.id
   const password = req.query.password
-  const room = game.getRoom(id)
+  const room = game.getRoomInfo(id)
   if (room) {
     if (password === room.password) {
       res.send({
@@ -83,7 +81,7 @@ io.on('connection', (socket) => {
 
   socket.on('join', (data) => {
     let id = data.id
-    let room = game.getRoom(id)
+    let room = game.getRoomInfo(id)
     socket.join(id)
     socket.emit('state', room.state)
   })

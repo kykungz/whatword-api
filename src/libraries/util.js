@@ -9,6 +9,7 @@ export const generateRoomId = () => {
 }
 
 export const deconstructRoom = (room) => {
+  if (!room) return room
   const { channel, ...subObject } = room
   return subObject
 }

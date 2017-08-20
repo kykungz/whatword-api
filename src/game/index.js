@@ -11,10 +11,16 @@ export default {
   remove (id) {
     this.rooms.splice(this.rooms.indexOf(id), 1)
   },
+  getRoomInfo (id) {
+    const room = this.rooms.find((room) => {
+      return room.id === id
+    })
+    return deconstructRoom(room)
+  },
   getRoom (id) {
     const room = this.rooms.find((room) => {
       return room.id === id
     })
-    return room ? deconstructRoom(room) : undefined
+    return room
   }
 }
