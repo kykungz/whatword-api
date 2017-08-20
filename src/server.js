@@ -5,6 +5,7 @@ import http from 'http'
 import socketIO from 'socket.io'
 import game from './game'
 import { deconstructRoom } from './libraries/util'
+import { GameNotFound, InvalidForm, Unauthorized } from './libraries/errors'
 
 const app = express()
 const server = http.Server(app)
@@ -19,9 +20,9 @@ app.post('/create', (req, res, next) => {
     const wordBank = req.body.wordBank
     const password = req.body.password.trim()
     if (!wordBank || !wordBank.length) {
-      res.status(400).send('Word Bank is empty!')
+      next(new InvalidForm('Word Bank is empty!'))
     } else if (!password || !password.length) {
-      res.status(400).send('Password is empty!')
+      next(new InvalidForm('Password is empty!'))
     } else {
       let room = game.create(wordBank, password)
       room.setChannel(io.in(room.id))
@@ -36,6 +37,25 @@ app.post('/create', (req, res, next) => {
   }
 })
 
+app.post('/update', (req, res, next) => {
+  const wordBank = req.body.wordBank
+  const id = req.body.id
+  const password = req.body.password
+  const room = game.getRoom(id)
+  if (room) {
+    if (password === room.password) {
+      room.wordBank = wordBank
+      res.send(room)
+    } else {
+      next(new Unauthorized('Wrong password!'))
+    }
+  } else {
+    const err = new Error('Game not found!')
+    err.status = 404
+    next(err)
+  }
+})
+
 app.get('/room', (req, res, next) => {
   const id = req.query.id
   const password = req.query.password
@@ -43,22 +63,17 @@ app.get('/room', (req, res, next) => {
   if (room) {
     if (password === room.password) {
       res.send({
-        success: true,
         admin: true,
         room
       })
     } else {
       res.send({
-        success: true,
         admin: false,
         room: room.state
       })
     }
-    // res.send(password === room.password ? room : room.state)
   } else {
-    const err = new Error('Game not found!')
-    err.status = 404
-    next(err)
+    next(new GameNotFound())
   }
 })
 
