@@ -12,10 +12,6 @@ export default class Room {
     }
   }
 
-  setChannel (channel) {
-    this.channel = channel
-  }
-
   correct () {
     let randomIndex = Math.floor(Math.random() * this.remainingWords.length)
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]

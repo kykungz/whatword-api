@@ -25,7 +25,7 @@ app.post('/create', (req, res, next) => {
       next(new InvalidForm('Password is empty!'))
     } else {
       let room = game.create(wordBank, password)
-      room.setChannel(io.in(room.id))
+      room.channel = io.in(room.id)
       res.send(room.id)
     }
   } catch (err) {
