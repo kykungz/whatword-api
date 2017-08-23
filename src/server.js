@@ -42,36 +42,40 @@ app.post('/update', (req, res, next) => {
   const id = req.body.id
   const password = req.body.password
   const room = game.getRoom(id)
-  if (room) {
-    if (password === room.password) {
-      room.wordBank = wordBank
-      res.send(deconstructRoom(room))
-    } else {
-      next(new Unauthorized('Wrong password!'))
-    }
-  } else {
+
+  if (!room) {
     next(new GameNotFound())
+    return
+  }
+
+  if (room.auth(password)) {
+    room.wordBank = wordBank
+    res.send(deconstructRoom(room))
+  } else {
+    next(new Unauthorized('Wrong password!'))
   }
 })
 
 app.get('/room', (req, res, next) => {
   const id = req.query.id
   const password = req.query.password
-  const room = game.getRoomInfo(id)
-  if (room) {
-    if (password === room.password) {
-      res.send({
-        admin: true,
-        room
-      })
-    } else {
-      res.send({
-        admin: false,
-        room: room.state
-      })
-    }
-  } else {
+  const room = game.getRoom(id)
+
+  if (!room) {
     next(new GameNotFound())
+    return
+  }
+
+  if (room.auth(password)) {
+    res.send({
+      admin: true,
+      room: deconstructRoom(room)
+    })
+  } else {
+    res.send({
+      admin: false,
+      room: room.state
+    })
   }
 })
 
@@ -84,16 +88,34 @@ io.on('connection', (socket) => {
     let room = game.getRoomInfo(id)
     socket.join(id)
     socket.emit('state', room.state)
+    console.log('join', data)
   })
 
   socket.on('status', (data) => {
-    let id = data.id
-    socket.join(id)
+    console.log('status', data)
   })
 
   socket.on('remote', (data) => {
-    let id = data.id
-    socket.join(id)
+    console.log('remote', data)
+    const room = game.getRoom(data.id)
+
+    if (!room || !room.auth(data.password)) return
+
+    switch (data.action) {
+      case 'correct':
+        room.correct()
+        break
+      case 'skip':
+        room.skip()
+        break
+      case 'hide':
+        room.hide()
+        break
+      case 'restart':
+        room.restart()
+        break
+      default:
+    }
   })
 })
 

@@ -12,7 +12,13 @@ export default class Room {
     }
   }
 
+  auth (password) {
+    console.log(password)
+    return this.password === password
+  }
+
   correct () {
+    console.log('correct called')
     let randomIndex = Math.floor(Math.random() * this.remainingWords.length)
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
     this.state.score++
