@@ -111,6 +111,9 @@ io.on('connection', (socket) => {
       case 'hide':
         room.hide()
         break
+      case 'show':
+        room.show()
+        break
       case 'restart':
         room.restart()
         break
