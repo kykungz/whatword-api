@@ -9,7 +9,8 @@ export default class Room {
     this.state = {
       currentWord: undefined,
       score: 0,
-      hiding: false
+      hiding: true,
+      remaining: wordBank.length
     }
   }
 
@@ -18,37 +19,39 @@ export default class Room {
   }
 
   correct () {
-    console.log('correct called')
-    let randomIndex = Math.floor(Math.random() * this.remainingWords.length)
-    this.state.hiding = false
+    const randomIndex = Math.floor(Math.random() * this.remainingWords.length)
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
     this.state.score++
+    this.state.hiding = this.state.currentWord === undefined
+    this.state.remaining = this.remainingWords.length
     this.channel.emit('state', this.state)
   }
 
   skip () {
-    let randomIndex = Math.floor(Math.random() * this.remainingWords.length)
-    this.state.hiding = false
-    this.state.currentWord = this.remainingWords[randomIndex]
+    const randomIndex = Math.floor(Math.random() * this.remainingWords.length)
+    if (this.state.currentWord) {
+      this.remainingWords.push(this.state.currentWord)
+    }
+    this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
+    this.state.hiding = this.state.currentWord === undefined
+    this.state.remaining = this.remainingWords.length
     this.channel.emit('state', this.state)
   }
 
   restart () {
     this.remainingWords = this.wordBank.slice()
-    this.state.hiding = false
     this.state.currentWord = undefined
     this.state.score = 0
+    this.state.hiding = true
+    this.state.remaining = this.remainingWords.length
     this.channel.emit('state', this.state)
   }
 
   hide () {
-    this.state.hiding = true
+    this.remainingWords.push(this.state.currentWord)
     this.state.currentWord = undefined
+    this.state.hiding = this.state.currentWord === undefined
+    this.state.remaining = this.remainingWords.length
     this.channel.emit('state', this.state)
-  }
-
-  show () {
-    this.state.hiding = false
-    this.skip()
   }
 }

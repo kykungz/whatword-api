@@ -88,15 +88,12 @@ io.on('connection', (socket) => {
     let room = game.getRoomInfo(id)
     socket.join(id)
     socket.emit('state', room.state)
-    console.log('join', data)
   })
 
   socket.on('status', (data) => {
-    console.log('status', data)
   })
 
   socket.on('remote', (data) => {
-    console.log('remote', data)
     const room = game.getRoom(data.id)
 
     if (!room || !room.auth(data.password)) return
@@ -112,7 +109,7 @@ io.on('connection', (socket) => {
         room.hide()
         break
       case 'show':
-        room.show()
+        room.skip()
         break
       case 'restart':
         room.restart()
