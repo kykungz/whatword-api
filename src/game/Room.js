@@ -7,6 +7,7 @@ export default class Room {
     this.wordBank = wordBank.slice()
     this.remainingWords = wordBank.slice()
     this.state = {
+      id: this.id,
       currentWord: undefined,
       score: 0,
       hiding: true,
