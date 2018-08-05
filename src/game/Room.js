@@ -1,17 +1,19 @@
 import { generateRoomId } from '../libraries/util'
 
 export default class Room {
-  constructor (wordBank, password) {
+  constructor ({ wordBank, color, password }) {
     this.id = generateRoomId()
     this.password = password
     this.wordBank = wordBank.slice()
     this.remainingWords = wordBank.slice()
+    this.color = color
     this.state = {
       id: this.id,
       currentWord: undefined,
       score: 0,
       hiding: true,
-      remaining: wordBank.length
+      remaining: wordBank.length,
+      color: this.color
     }
   }
 
@@ -53,6 +55,12 @@ export default class Room {
     this.state.currentWord = undefined
     this.state.hiding = this.state.currentWord === undefined
     this.state.remaining = this.remainingWords.length
+    this.channel.emit('state', this.state)
+  }
+
+  update ({ wordBank, color }) {
+    this.wordBank = wordBank
+    this.state.color = color
     this.channel.emit('state', this.state)
   }
 }

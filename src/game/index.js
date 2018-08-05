@@ -3,8 +3,8 @@ import Room from './Room'
 
 export default {
   rooms: [],
-  create (wordBank, password) {
-    const room = new Room(wordBank, password)
+  create (options) {
+    const room = new Room(options)
     this.rooms.push(room)
     return room
   },
