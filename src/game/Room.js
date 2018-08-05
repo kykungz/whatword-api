@@ -60,6 +60,7 @@ export default class Room {
 
   update ({ wordBank, color }) {
     this.wordBank = wordBank
+    this.color = color
     this.state.color = color
     this.channel.emit('state', this.state)
   }
