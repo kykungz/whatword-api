@@ -86,8 +86,10 @@ io.on('connection', socket => {
   socket.on('join', data => {
     let id = data.id
     let room = game.getRoomInfo(id)
-    socket.join(id)
-    socket.emit('state', room.state)
+    if (room) {
+      socket.join(id)
+      socket.emit('state', room.state)
+    }
   })
 
   socket.on('status', data => {})
