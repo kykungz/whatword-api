@@ -1,4 +1,5 @@
 import { generateRoomId } from '../libraries/util'
+import _ from 'lodash'
 
 export default class Room {
   constructor ({ wordBank, color, password }) {
@@ -7,13 +8,15 @@ export default class Room {
     this.wordBank = wordBank.slice()
     this.remainingWords = wordBank.slice()
     this.color = color
+    this.hidingWord = undefined
     this.state = {
       id: this.id,
       currentWord: undefined,
       score: 0,
-      remaining: wordBank.length,
+      remaining: this.remainingWords.length,
       color: this.color
     }
+    this.restart()
   }
 
   auth (password) {
@@ -21,32 +24,36 @@ export default class Room {
   }
 
   correct () {
-    const randomIndex = Math.floor(Math.random() * this.remainingWords.length)
-    this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
+    const random = Math.floor(Math.random() * this.remainingWords.length)
+    this.state.currentWord = _.pullAt(this.remainingWords, random)[0]
     this.state.score++
     this.state.remaining = this.remainingWords.length
   }
 
   skip () {
-    const randomIndex = Math.floor(Math.random() * this.remainingWords.length)
-    if (this.state.currentWord) {
-      this.remainingWords.push(this.state.currentWord)
-    }
-    this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
-    this.state.remaining = this.remainingWords.length
+    const random = Math.floor(Math.random() * this.remainingWords.length)
+    const previous = this.state.currentWord
+    this.state.currentWord = _.pullAt(this.remainingWords, random)[0]
+    this.remainingWords.push(previous)
   }
 
   restart () {
     this.remainingWords = this.wordBank.slice()
-    this.state.currentWord = undefined
+
+    const random = Math.floor(Math.random() * this.remainingWords.length)
+    this.state.currentWord = _.pullAt(this.remainingWords, random)[0]
     this.state.score = 0
     this.state.remaining = this.remainingWords.length
+    this.hide()
   }
 
   hide () {
-    this.remainingWords.push(this.state.currentWord)
+    this.hidingWord = this.state.currentWord
     this.state.currentWord = undefined
-    this.state.remaining = this.remainingWords.length
+  }
+
+  show () {
+    this.state.currentWord = this.hidingWord
   }
 
   update ({ wordBank, color }) {

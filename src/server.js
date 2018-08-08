@@ -100,7 +100,7 @@ app.post('/remote', (req, res, next) => {
         room.hide()
         break
       case 'show':
-        room.skip()
+        room.show()
         break
       case 'restart':
         room.restart()
