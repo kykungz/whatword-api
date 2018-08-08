@@ -83,8 +83,6 @@ app.get('/room', (req, res, next) => {
 app.post('/remote', (req, res, next) => {
   const { id, password, action } = req.body
   const room = game.getRoom(id)
-  console.log('id:', id)
-  console.log('room:', room)
 
   if (!room) {
     return next(new GameNotFound())
