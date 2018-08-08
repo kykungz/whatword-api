@@ -27,7 +27,6 @@ app.post('/create', (req, res, next) => {
       next(new InvalidForm('Password is empty!'))
     } else {
       let room = game.create({ wordBank, color, password })
-      room.channel = io.in(room.id)
       res.send(room.id)
     }
   } catch (err) {
@@ -51,6 +50,7 @@ app.post('/update', (req, res, next) => {
 
   if (room.auth(password)) {
     room.update({ wordBank, color })
+    io.to(id).emit('state', room.state)
     res.send(deconstructRoom(room))
   } else {
     next(new Unauthorized('Wrong password!'))
@@ -107,6 +107,7 @@ app.post('/remote', (req, res, next) => {
         break
       default:
     }
+    io.to(id).emit('state', room.state)
     res.send({ success: true })
   } else {
     next(new Unauthorized('You dont have permission!'))

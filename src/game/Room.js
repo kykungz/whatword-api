@@ -25,7 +25,6 @@ export default class Room {
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
     this.state.score++
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   skip () {
@@ -35,7 +34,6 @@ export default class Room {
     }
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   restart () {
@@ -43,20 +41,17 @@ export default class Room {
     this.state.currentWord = undefined
     this.state.score = 0
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   hide () {
     this.remainingWords.push(this.state.currentWord)
     this.state.currentWord = undefined
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   update ({ wordBank, color }) {
     this.wordBank = wordBank
     this.color = color
     this.state.color = color
-    this.channel.emit('state', this.state)
   }
 }
