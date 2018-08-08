@@ -80,6 +80,41 @@ app.get('/room', (req, res, next) => {
   }
 })
 
+app.post('/remote', (req, res, next) => {
+  const { id, password, action } = req.body
+  const room = game.getRoom(id)
+  console.log('id:', id)
+  console.log('room:', room)
+
+  if (!room) {
+    return next(new GameNotFound())
+  }
+
+  if (room.auth(password)) {
+    switch (action) {
+      case 'correct':
+        room.correct()
+        break
+      case 'skip':
+        room.skip()
+        break
+      case 'hide':
+        room.hide()
+        break
+      case 'show':
+        room.skip()
+        break
+      case 'restart':
+        room.restart()
+        break
+      default:
+    }
+    res.send({ success: true })
+  } else {
+    next(new Unauthorized('You dont have permission!'))
+  }
+})
+
 io.on('connection', socket => {
   socket.on('disconnect', () => {})
 
@@ -88,33 +123,6 @@ io.on('connection', socket => {
     let room = game.getRoomInfo(id)
     socket.join(id)
     socket.emit('state', room.state)
-  })
-
-  socket.on('status', data => {})
-
-  socket.on('remote', data => {
-    const room = game.getRoom(data.id)
-
-    if (room && room.auth(data.password)) {
-      switch (data.action) {
-        case 'correct':
-          room.correct()
-          break
-        case 'skip':
-          room.skip()
-          break
-        case 'hide':
-          room.hide()
-          break
-        case 'show':
-          room.skip()
-          break
-        case 'restart':
-          room.restart()
-          break
-        default:
-      }
-    }
   })
 })
 
