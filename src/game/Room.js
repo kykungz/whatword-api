@@ -11,7 +11,6 @@ export default class Room {
       id: this.id,
       currentWord: undefined,
       score: 0,
-      hiding: true,
       remaining: wordBank.length,
       color: this.color
     }
@@ -25,9 +24,7 @@ export default class Room {
     const randomIndex = Math.floor(Math.random() * this.remainingWords.length)
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
     this.state.score++
-    this.state.hiding = this.state.currentWord === undefined
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   skip () {
@@ -36,32 +33,25 @@ export default class Room {
       this.remainingWords.push(this.state.currentWord)
     }
     this.state.currentWord = this.remainingWords.splice(randomIndex, 1)[0]
-    this.state.hiding = this.state.currentWord === undefined
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   restart () {
     this.remainingWords = this.wordBank.slice()
     this.state.currentWord = undefined
     this.state.score = 0
-    this.state.hiding = true
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   hide () {
     this.remainingWords.push(this.state.currentWord)
     this.state.currentWord = undefined
-    this.state.hiding = this.state.currentWord === undefined
     this.state.remaining = this.remainingWords.length
-    this.channel.emit('state', this.state)
   }
 
   update ({ wordBank, color }) {
     this.wordBank = wordBank
     this.color = color
     this.state.color = color
-    this.channel.emit('state', this.state)
   }
 }
