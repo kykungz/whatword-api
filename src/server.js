@@ -2,33 +2,13 @@ import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import http from 'http'
-import https from 'https'
-import fs from 'fs'
-import path from 'path'
 import socketIO from 'socket.io'
 import game from './game'
 import { deconstructRoom } from './libraries/util'
 import { GameNotFound, InvalidForm, Unauthorized } from './libraries/errors'
 
 const app = express()
-let server
-
-// const isProduction = process.env.NODE_ENV === 'production'
-
-// if (isProduction) {
-//   const key = fs.readFileSync(
-//     path.join(__dirname, '../../ssl_cert/example.key'),
-//   )
-//   const cert = fs.readFileSync(
-//     path.join(__dirname, '../../ssl_cert/example.crt'),
-//   )
-//   server = https.createServer({ key, cert }, app)
-// } else {
-//   server = http.Server(app)
-// }
-
-server = http.Server(app)
-
+const server = http.Server(app)
 const io = socketIO(server)
 
 app.use(cors())
@@ -36,7 +16,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res, next) => {
-  res.send(process.env.NODE_ENV)
+  res.send(process.env.NODE_ENV || 'development')
 })
 
 app.post('/create', (req, res, next) => {
