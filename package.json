@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "gcloud app deploy app.yaml --project whatword"
   },
   "author": "Kongpon Charanwattanakit",
   "license": "MIT",

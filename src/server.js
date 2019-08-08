@@ -15,6 +15,10 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+app.get('/', (req, res, next) => {
+  res.send(process.env.NODE_ENV)
+})
+
 app.post('/create', (req, res, next) => {
   try {
     const wordBank = req.body.wordBank
