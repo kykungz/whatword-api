@@ -11,21 +11,23 @@ import { deconstructRoom } from './libraries/util'
 import { GameNotFound, InvalidForm, Unauthorized } from './libraries/errors'
 
 const app = express()
-const isProduction = process.env.NODE_ENV === 'production'
-
 let server
 
-if (isProduction) {
-  const key = fs.readFileSync(
-    path.join(__dirname, '../../ssl_cert/example.key'),
-  )
-  const cert = fs.readFileSync(
-    path.join(__dirname, '../../ssl_cert/example.crt'),
-  )
-  server = https.createServer({ key, cert }, app)
-} else {
-  server = http.Server(app)
-}
+// const isProduction = process.env.NODE_ENV === 'production'
+
+// if (isProduction) {
+//   const key = fs.readFileSync(
+//     path.join(__dirname, '../../ssl_cert/example.key'),
+//   )
+//   const cert = fs.readFileSync(
+//     path.join(__dirname, '../../ssl_cert/example.crt'),
+//   )
+//   server = https.createServer({ key, cert }, app)
+// } else {
+//   server = http.Server(app)
+// }
+
+server = http.Server(app)
 
 const io = socketIO(server)
 
