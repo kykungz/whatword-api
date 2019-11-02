@@ -27,7 +27,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "express": "^4.15.4",
     "ip": "^1.1.5",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.13",
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
